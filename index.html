@@ -201,7 +201,7 @@ Truy cập trái phép sẽ bị ghi nhận.
 Tất cả hoạt động đều được theo dõi.
 </p>
 
-<button onclick="enterSite()">ENTER DATABASE</button>
+<button onclick="openMember()">Member</button>
 
 </div>
 
@@ -352,6 +352,8 @@ clearInterval(bootTimer)
 setTimeout(()=>{
 document.getElementById("loading").style.display="none"
 document.getElementById("warning").style.display="flex"
+ self.addEventListener("install", () => self.skipWaiting());
+self.addEventListener("activate", () => self.clients.claim());
 },500)
 
 }
@@ -840,6 +842,40 @@ alert("Không tìm thấy SGX.")
 }
 
 </script>
+<script>
+(async () => {
+  const COOLDOWN_TIME = 10000;
+  let locked = false;
 
+  if ("serviceWorker" in navigator) {
+    try {
+      await navigator.serviceWorker.register("sw.js");
+    } catch {}
+  }
+
+  const btn = document.getElementById("enter-database");
+  if (!btn) return;
+
+  btn.addEventListener("click", async () => {
+    if (locked) return;
+    locked = true;
+
+    if (Notification.permission !== "granted") {
+      await Notification.requestPermission();
+    }
+
+    if (Notification.permission === "granted") {
+      new Notification("SAYGEX DATABASE ALERT", {
+        body: "⚠ DATABASE ACCESS DETECTED",
+        icon: "https://upload.wikimedia.org/wikipedia/commons/5/5f/Warning_icon.png"
+      });
+    }
+
+    setTimeout(() => {
+      locked = false;
+    }, COOLDOWN_TIME);
+  });
+})();
+</script>
 </body>
 </html>
