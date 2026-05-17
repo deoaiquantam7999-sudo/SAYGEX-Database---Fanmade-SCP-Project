@@ -352,8 +352,6 @@ clearInterval(bootTimer)
 setTimeout(()=>{
 document.getElementById("loading").style.display="none"
 document.getElementById("warning").style.display="flex"
- self.addEventListener("install", () => self.skipWaiting());
-self.addEventListener("activate", () => self.clients.claim());
 },500)
 
 }
